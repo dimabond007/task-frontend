@@ -57,6 +57,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { Separator } from "@/components/ui/separator";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { useTheme } from "@/contexts/ThemeProvider";
 
 const SortableItem = ({
   id,
@@ -84,6 +85,7 @@ const SortableItem = ({
     completed: content.completed,
     todoList: content.todoList || [], // Добавлено значение по умолчанию
   });
+  const { theme } = useTheme();
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -115,13 +117,24 @@ const SortableItem = ({
                 <DialogTrigger>
                   <Pencil />
                 </DialogTrigger>
-                <DialogContent className="theme-custom">
-                  <DialogHeader>
+                <DialogContent
+                  className={
+                    theme === "light"
+                      ? "light-theme-custom"
+                      : "dark-theme-custom"
+                  }
+                >
+                  <DialogHeader className="text-primary">
                     <DialogTitle>Edit Task</DialogTitle>
                   </DialogHeader>
                   <div className="flex flex-col gap-4 py-4">
                     <div className="flex flex-col gap-4">
-                      <Label htmlFor="title">Title</Label>
+                      <Label
+                        htmlFor="title"
+                        className="text-secondary-foreground"
+                      >
+                        Title
+                      </Label>
                       <Input
                         type="text"
                         id="title"
@@ -129,10 +142,16 @@ const SortableItem = ({
                         onChange={(e) =>
                           setEditTask({ ...editTask, title: e.target.value })
                         }
+                        className="text-secondary-foreground"
                       />
                     </div>
                     <div className="flex flex-col gap-4">
-                      <Label htmlFor="description">Description</Label>
+                      <Label
+                        htmlFor="description"
+                        className="text-secondary-foreground"
+                      >
+                        Description
+                      </Label>
                       <Input
                         type="text"
                         id="description"
@@ -143,10 +162,13 @@ const SortableItem = ({
                             description: e.target.value,
                           })
                         }
+                        className="text-secondary-foreground"
                       />
                     </div>
                     <div className="flex flex-col gap-4 w-full">
-                      <Label>Todos of this task:</Label>
+                      <Label className="text-secondary-foreground">
+                        Todos of this task:
+                      </Label>
                       <Separator />
                       {editTask.todoList.map((todo, index) => (
                         <div
@@ -155,12 +177,14 @@ const SortableItem = ({
                         >
                           <Input
                             type="text"
+                            className="text-secondary-foreground"
                             value={todo.title}
                             onChange={(e) =>
                               handleTodoTitleChange(index, e.target.value)
                             }
                           />
                           <Trash2
+                            className="text-secondary-foreground"
                             onClick={() => {
                               deleteTodoOfTask(editTask._id, todo._id);
                               setEditTask({
@@ -251,6 +275,7 @@ export default function TaskList() {
     description: "",
     todoList: [],
   });
+  const { theme } = useTheme();
 
   const [activeId, setActiveId] = useState(null);
 
@@ -438,49 +463,72 @@ export default function TaskList() {
               </TabsTrigger>
             </TabsList>
             <Dialog>
-              <DialogTrigger>
+              <DialogTrigger className="text-secondary-foreground">
                 <Plus />
               </DialogTrigger>
-              <DialogContent className="theme-custom">
+              <DialogContent
+                className={
+                  theme === "light" ? "light-theme-custom" : "dark-theme-custom"
+                }
+              >
                 <DialogHeader>
-                  <DialogTitle>Creating Task</DialogTitle>
+                  <DialogTitle className="text-primary">
+                    Creating Task
+                  </DialogTitle>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="title">Title</Label>
+                    <Label
+                      htmlFor="title"
+                      className="text-secondary-foreground"
+                    >
+                      Title
+                    </Label>
                     <Input
                       id="title"
                       value={creatingTask?.title || ""}
                       onChange={(e) => handleInputChange(e, "title")}
-                      className="col-span-3"
+                      className="col-span-3 text-secondary-foreground"
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="description">Description</Label>
+                    <Label
+                      htmlFor="description"
+                      className="text-secondary-foreground"
+                    >
+                      Description
+                    </Label>
                     <Input
                       id="description"
                       value={creatingTask?.description || ""}
                       onChange={(e) => handleInputChange(e, "description")}
-                      className="col-span-3"
+                      className="col-span-3 text-secondary-foreground"
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label>To do:</Label>
-                    <Button onClick={handleAddTodo}>Add Todo</Button>
+                    <Label className="text-secondary-foreground">To do:</Label>
+                    <Button onClick={handleAddTodo} className="text-secondary">
+                      Add Todo
+                    </Button>
                   </div>
                   {creatingTask.todoList.map((todo, index) => (
                     <div
                       key={index}
                       className="grid grid-cols-4 items-center gap-4"
                     >
-                      <Label htmlFor={`todo-${index}`}>Todo {index + 1}</Label>
+                      <Label
+                        htmlFor={`todo-${index}`}
+                        className="text-secondary-foreground"
+                      >
+                        Todo {index + 1}
+                      </Label>
                       <Input
                         id={`todo-${index}`}
                         value={todo.title}
                         onChange={(e) =>
                           handleTodoChange(index, e.target.value)
                         }
-                        className="col-span-3"
+                        className="col-span-3 text-secondary-foreground"
                       />
                     </div>
                   ))}
@@ -508,7 +556,7 @@ export default function TaskList() {
 
                     <DialogPrimitive.Close className="w-full">
                       <Button
-                        className="flex-grow w-full"
+                        className="flex-grow w-full text-secondary-foreground"
                         variant="ghost"
                         onClick={() =>
                           setCreatingTask({
