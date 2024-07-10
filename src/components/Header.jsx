@@ -68,7 +68,7 @@ export default function Header() {
                     {/* <DropdownMenuLabel>My Account</DropdownMenuLabel> */}
                     {/* <DropdownMenuSeparator /> */}
                     <DropdownMenuItem>
-                      <Link>Profile</Link>
+                      <Link to="/profile">Profile</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                       <Link to="/task">My Tasks</Link>

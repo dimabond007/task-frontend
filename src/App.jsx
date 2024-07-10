@@ -19,6 +19,7 @@ import MainLayout from "./components/MainLayout";
 import Register from "./pages/Register";
 import { useUserContext } from "./contexts/UserContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -27,6 +28,8 @@ function App() {
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
         </Route>
+
+        <Route path="/profile" element={<Profile />} />
         <Route
           path="/task"
           element={
