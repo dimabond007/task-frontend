@@ -31,28 +31,32 @@ const ProfilePage = () => {
   return (
     <div className="container mx-auto p-4">
       {user ? (
-        <Card className="profile">
-          <CardHeader>
-            <CardTitle className="text-3xl font-bold">Profile</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="mb-4">
-              <label className="block font-medium">Name:</label>
-              <span className="block">
-                {user.firstname} {user.lastname}
-              </span>
-            </div>
-            <div className="mb-4">
-              <label className="block font-medium">Email:</label>
-              <span className="block">{user.email}</span>
-            </div>
-            <div className="mb-4 ">
-              <label className="block font-medium">Username:</label>
-              <span className="block">{user.username}</span>
-            </div>
-            <Button onClick={logout}>Logout</Button>
-          </CardContent>
-        </Card>
+        <>
+          <div className="text-center m-4">
+            <h1 className="text-4xl font-bold text-primary">My Profile</h1>
+          </div>
+          <Card className="profile p-4">
+            <CardContent className="flex justify-between p-0 my-4">
+              <div>
+                <label className="block font-medium">Name:</label>
+                <span className="block">
+                  {user.firstname} {user.lastname}
+                </span>
+              </div>
+              <div>
+                <label className="block font-medium">Email:</label>
+                <span className="block">{user.email}</span>
+              </div>
+              <div>
+                <label className="block font-medium">Username:</label>
+                <span className="block">{user.username}</span>
+              </div>
+            </CardContent>
+            <Button onClick={logout} className="w-full">
+              Logout
+            </Button>
+          </Card>
+        </>
       ) : (
         <div className="text-center">
           <h1 className="text-3xl font-bold mb-4">Please log in</h1>

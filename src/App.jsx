@@ -28,8 +28,9 @@ function App() {
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
         </Route>
-
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile" element={<MainLayout />}>
+          <Route index element={<Profile />} />
+        </Route>
         <Route
           path="/task"
           element={
