@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import axios from "axios";
+import api from "../services/api.service";
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -29,10 +30,7 @@ export default function Register() {
       password,
     };
 
-    const token = await axios.post(
-      "http://localhost:3000/api/auth/register",
-      regUser
-    );
+    const token = await api.post("/auth/register", regUser);
 
     // console.log("First Name:", firstname);
     // console.log("Last Name:", lastname);
@@ -101,7 +99,7 @@ export default function Register() {
       <p className="text-xs">
         Already have an account?{" "}
         <Link className="underline font-bold" to="/auth/login">
-          Login
+          Register
         </Link>
       </p>
     </div>

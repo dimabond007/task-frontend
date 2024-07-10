@@ -1,5 +1,5 @@
 import { useUserContext } from "@/contexts/UserContext";
-import axios from "axios";
+import api from "../services/api.service";
 import React, { useEffect, useState } from "react";
 import {
   Card,
@@ -24,6 +24,7 @@ import {
   Pencil,
   Pin,
   Plus,
+  Save,
   TableProperties,
   Trash2,
   X,
@@ -34,6 +35,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -53,6 +55,8 @@ import {
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { Separator } from "@/components/ui/separator";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 
 const SortableItem = ({
   id,
@@ -60,6 +64,8 @@ const SortableItem = ({
   onTodoUpdate,
   handleDeleteTask,
   handlePin,
+  updateTaskLocaly,
+  deleteTodoOfTask,
 }) => {
   const {
     attributes,
@@ -69,6 +75,15 @@ const SortableItem = ({
     transition,
     isDragging,
   } = useSortable({ id });
+  const DialogClose = DialogPrimitive.Close;
+
+  const [editTask, setEditTask] = useState({
+    _id: content._id,
+    title: content.title,
+    description: content.description,
+    completed: content.completed,
+    todoList: content.todoList || [], // Добавлено значение по умолчанию
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -91,13 +106,104 @@ const SortableItem = ({
           <CardTitle className="flex justify-between items-start">
             {content.title}
             <div className="flex gap-2">
-              <Button
-                variant="ghost"
-                className="p-0 h-auto"
-                onClick={() => handleDeleteTask(id)}
-              >
-                <Pencil />
-              </Button>
+              <Dialog>
+                <DialogTrigger>
+                  <Pencil />
+                </DialogTrigger>
+                <DialogContent className="theme-custom">
+                  <DialogHeader>
+                    <DialogTitle>Edit Task</DialogTitle>
+                  </DialogHeader>
+                  <div className="flex flex-col gap-4 py-4">
+                    <div className="flex flex-col gap-4">
+                      <Label htmlFor="title">Title</Label>
+                      <Input
+                        type="text"
+                        id="title"
+                        value={editTask.title}
+                        onChange={(e) =>
+                          setEditTask({ ...editTask, title: e.target.value })
+                        }
+                      />
+                    </div>
+                    <div className="flex flex-col gap-4">
+                      <Label htmlFor="description">Description</Label>
+                      <Input
+                        type="text"
+                        id="description"
+                        value={editTask.description}
+                        onChange={(e) =>
+                          setEditTask({
+                            ...editTask,
+                            description: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="flex flex-col gap-4 w-full">
+                      <div className="flex flex-col gap-4 w-full">
+                        <Label>Todos of this task:</Label>
+                        <Separator />
+
+                        {editTask.todoList.map((todo, index) => (
+                          <div
+                            key={todo._id}
+                            className="flex gap-2 justify-between items-center "
+                          >
+                            <label className="font-medium">{todo.title}</label>
+                            <Trash2
+                              onClick={() => {
+                                deleteTodoOfTask(editTask._id, todo._id);
+                                setEditTask({
+                                  title: editTask.title,
+                                  description: editTask.description,
+                                  completed: editTask.completed,
+                                  todoList: editTask.todoList.filter(
+                                    (t) => t._id !== todo._id
+                                  ),
+                                });
+                                updateTaskLocaly(editTask);
+                              }}
+                            />
+                          </div>
+                        ))}
+                        <Separator />
+                        <Button
+                          onClick={() =>
+                            setEditTask({
+                              ...editTask,
+                              todoList: [
+                                ...editTask.todoList,
+                                { title: "", isComplete: false },
+                              ],
+                            })
+                          }
+                          className="flex gap-2"
+                        >
+                          <Plus />
+                          Add Todo
+                        </Button>
+                      </div>
+                      <DialogPrimitive.Close className="w-full">
+                        <Button
+                          onClick={async () => {
+                            await api.patch("/task/" + id, editTask);
+                            // setEditTask({
+                            //   ...editTask,
+                            // });
+                            updateTaskLocaly(editTask);
+                          }}
+                          className="flex gap-2 w-full"
+                        >
+                          {" "}
+                          <Save />
+                          Save Changes
+                        </Button>
+                      </DialogPrimitive.Close>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
               <Button
                 variant="ghost"
                 className="p-0 h-auto"
@@ -136,8 +242,6 @@ const SortableItem = ({
 
 export default function TaskList() {
   const [tasks, setTasks] = useState([]);
-  // const [pinedTa]
-
   const [loading, setLoading] = useState(true);
   const { token } = useUserContext();
   const [creatingTask, setCreatingTask] = useState({
@@ -145,16 +249,13 @@ export default function TaskList() {
     description: "",
     todoList: [],
   });
+
   const [activeId, setActiveId] = useState(null);
 
   useEffect(() => {
     async function fetchTasks() {
       try {
-        const response = await axios.get("http://localhost:3000/api/task", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await api.get("/task");
         setTasks(response.data);
       } catch (error) {
         console.error("Error fetching tasks:", error);
@@ -168,17 +269,35 @@ export default function TaskList() {
     }
   }, [token]);
 
+  async function deleteTodoOfTask(todoId, taskId) {
+    const updatedTasks = tasks.map((task) =>
+      task._id === taskId
+        ? {
+            ...task,
+            todoList: task.todoList.filter((todo) => todo._id !== todoId),
+          }
+        : task
+    );
+    setTasks(updatedTasks);
+
+    // Update task in the server
+    const taskUpdate = tasks.find((task) => task.id === taskId);
+    try {
+      await api.put(`/task/${taskId}`, taskUpdate);
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
+  }
+
+  function updateTaskLocaly(taskUpdate) {
+    const updatedTasks = tasks.map((task) =>
+      task._id === taskUpdate._id ? taskUpdate : task
+    );
+    setTasks(updatedTasks);
+  }
   async function updateTodo(taskId, todoId, isComplete) {
     try {
-      await axios.put(
-        `http://localhost:3000/api/task/${taskId}/todo/${todoId}`,
-        { isComplete },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await api.put(`/task/${taskId}/todo/${todoId}`, { isComplete });
 
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
@@ -230,15 +349,7 @@ export default function TaskList() {
 
   const updateTaskOrder = async (updatedTasks) => {
     try {
-      await axios.put(
-        "http://localhost:3000/api/task/reorder",
-        { tasks: updatedTasks },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await api.put("/task/reorder", { tasks: updatedTasks });
     } catch (error) {
       console.error("Error updating task order:", error);
     }
@@ -246,16 +357,7 @@ export default function TaskList() {
 
   async function handlePin(id) {
     try {
-      await axios.put(
-        `http://localhost:3000/api/task/${id}/pin`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log("pin");
+      await api.put(`/task/${id}/pin`);
       setTasks((prevTasks) =>
         prevTasks.map((task) => {
           return task._id === id ? { ...task, isPinned: !task.isPinned } : task;
@@ -306,11 +408,7 @@ export default function TaskList() {
 
   const handleDeleteTask = async (taskId) => {
     try {
-      await axios.delete(`http://localhost:3000/api/task/${taskId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await api.delete(`/task/${taskId}`);
 
       setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
     } catch (error) {
@@ -385,23 +483,14 @@ export default function TaskList() {
                     </div>
                   ))}
                   <div className="flex items-center justify-center gap-4">
-                    <Button
-                      className="flex-grow"
-                      disabled={
-                        !creatingTask.title || !creatingTask.description
-                      }
-                      onClick={() => {
-                        axios
-                          .post(
-                            "http://localhost:3000/api/task",
-                            creatingTask,
-                            {
-                              headers: {
-                                Authorization: `Bearer ${token}`,
-                              },
-                            }
-                          )
-                          .then((response) => {
+                    <DialogPrimitive.Close className="w-full">
+                      <Button
+                        className="flex-grow w-full"
+                        disabled={
+                          !creatingTask.title || !creatingTask.description
+                        }
+                        onClick={() => {
+                          api.post("/task", creatingTask).then((response) => {
                             setTasks([response.data, ...tasks]);
                             setCreatingTask({
                               title: "",
@@ -409,23 +498,27 @@ export default function TaskList() {
                               todoList: [],
                             });
                           });
-                      }}
-                    >
-                      Create
-                    </Button>
-                    <Button
-                      className="flex-grow"
-                      variant="ghost"
-                      onClick={() =>
-                        setCreatingTask({
-                          title: "",
-                          description: "",
-                          todoList: [],
-                        })
-                      }
-                    >
-                      Cancel
-                    </Button>
+                        }}
+                      >
+                        Create
+                      </Button>
+                    </DialogPrimitive.Close>
+
+                    <DialogPrimitive.Close className="w-full">
+                      <Button
+                        className="flex-grow w-full"
+                        variant="ghost"
+                        onClick={() =>
+                          setCreatingTask({
+                            title: "",
+                            description: "",
+                            todoList: [],
+                          })
+                        }
+                      >
+                        Cancel
+                      </Button>
+                    </DialogPrimitive.Close>
                   </div>
                 </div>
               </DialogContent>
@@ -452,6 +545,8 @@ export default function TaskList() {
                       onTodoUpdate={updateTodo}
                       handleDeleteTask={handleDeleteTask}
                       handlePin={handlePin}
+                      updateTaskLocaly={updateTaskLocaly}
+                      deleteTodoOfTask={deleteTodoOfTask}
                     />
                   ))}
                 </div>

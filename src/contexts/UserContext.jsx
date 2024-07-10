@@ -1,9 +1,9 @@
-import axios from "axios";
+import api from "../services/api.service";
+
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 const UserContext = createContext(null);
-const USER_URL = "http://localhost:3000/api/auth/user";
-const REFRESH_URL = "http://localhost:3000/api/auth/refresh";
+const USER_URL = "/auth/user";
 
 export const UserProvider = ({ children }) => {
   const [token, setUserToken] = useState(null);
@@ -23,7 +23,7 @@ export const UserProvider = ({ children }) => {
     if (!userToken) return null;
 
     try {
-      const res = await axios.post(USER_URL, { token: userToken });
+      const res = await api.post(USER_URL, { token: userToken });
       return res.data;
     } catch (error) {
       if (error.response && error.response.status === 401) {

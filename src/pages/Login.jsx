@@ -2,7 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useUserContext } from "@/contexts/UserContext";
-import axios from "axios";
+
+import api from "../services/api.service";
+
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -17,11 +19,8 @@ export default function Login() {
     const loginUser = { username, password };
     console.log(loginUser);
     try {
-      const res = await axios.post(
-        "http://localhost:3000/api/auth/login",
-        loginUser
-      );
-      console.log(res.data.token);
+      const res = await api.post("/auth/login", loginUser);
+
       login(res.data.token);
       navigate("/task");
     } catch (error) {
