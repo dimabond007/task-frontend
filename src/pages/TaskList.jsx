@@ -7,12 +7,14 @@ export default function TaskList() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const { token } = useUserContext();
+  const [pinnedTasks, setPinnedTasks] = useState({});
 
   useEffect(() => {
     async function fetchTasks() {
       try {
         const response = await api.get("/task");
-        setTasks(response.data);
+        setPinnedTasks(response.data.filter((task) => task.isPinned));
+        setTasks(response.data.filter((task) => !task.isPinned));
       } catch (error) {
         console.error("Error fetching tasks:", error);
       } finally {
@@ -23,7 +25,7 @@ export default function TaskList() {
     if (token) {
       fetchTasks();
     }
-  }, [token]);
+  }, [token, pinnedTasks, tasks]);
 
   async function deleteTodoOfTask(todoId, taskId) {
     const updatedTasks = tasks.map((task) =>
@@ -113,6 +115,7 @@ export default function TaskList() {
           handlePin={handlePin}
           updateTaskLocaly={updateTaskLocaly}
           deleteTodoOfTask={deleteTodoOfTask}
+          pinnedTasks={pinnedTasks}
         />
       )}
     </div>
