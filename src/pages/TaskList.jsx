@@ -604,7 +604,7 @@ export default function TaskList() {
             </DndContext>
           </TabsContent>
           <TabsContent value="table">
-            <Table>
+            <Table className="text-secondary-foreground">
               <TableCaption>A list of your tasks.</TableCaption>
               <TableHeader>
                 <TableRow>
