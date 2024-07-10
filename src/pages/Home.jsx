@@ -11,7 +11,7 @@ import {
 
 function Home() {
   return (
-    <div className="container mx-auto py-12">
+    <div className="container mx-auto py-12 text-secondary-foreground">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-primary mb-4">
           Welcome to TaskManager
@@ -84,7 +84,7 @@ function Home() {
           <div className="space-y-6">
             <Card>
               <CardContent className="p-4 ">
-                <CardDescription className="text-white">
+                <CardDescription className="text-secondary-foreground">
                   "TaskManager has revolutionized the way I handle my projects.
                   The drag-and-drop feature is a game-changer!" - Alex P.
                 </CardDescription>
@@ -93,7 +93,7 @@ function Home() {
 
             <Card>
               <CardContent className="p-4 ">
-                <CardDescription className="text-white">
+                <CardDescription className="text-secondary-foreground">
                   "The ability to track my tasks' progress and collaborate with
                   my team in one place has boosted our productivity." - Sarah W.
                 </CardDescription>
@@ -102,7 +102,7 @@ function Home() {
 
             <Card>
               <CardContent className="p-4 ">
-                <CardDescription className="text-white">
+                <CardDescription className="text-secondary-foreground">
                   "Simple, intuitive, and highly effective. TaskManager is the
                   best task management tool I've used." - John D.
                 </CardDescription>

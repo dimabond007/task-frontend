@@ -36,7 +36,7 @@ export default function Login() {
       </h1>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-row gap-4 max-w-96 flex-wrap"
+        className="flex flex-row gap-4 max-w-96 flex-wrap text-secondary-foreground"
       >
         <Input
           type="text"
