@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import api from "../services/api.service";
 
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Register() {
   const [firstname, setFirstname] = useState("");
@@ -13,6 +13,7 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -31,6 +32,7 @@ export default function Register() {
     };
 
     const token = await api.post("/auth/register", regUser);
+    navigate("/task");
 
     // console.log("First Name:", firstname);
     // console.log("Last Name:", lastname);
@@ -45,7 +47,7 @@ export default function Register() {
       </h1>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-row gap-4 max-w-96 flex-wrap"
+        className="flex flex-row gap-4 max-w-96 flex-wrap text-secondary-foreground"
       >
         {/* <Label htmlFor="email">Email</Label> */}
         <Input
@@ -96,7 +98,7 @@ export default function Register() {
           Register
         </Button>
       </form>
-      <p className="text-xs">
+      <p className="text-xs text-secondary-foreground">
         Already have an account?{" "}
         <Link className="underline font-bold" to="/auth/login">
           Login

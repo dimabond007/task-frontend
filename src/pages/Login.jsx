@@ -56,7 +56,7 @@ export default function Login() {
           Login
         </Button>
       </form>
-      <p className="text-xs">
+      <p className="text-xs text-secondary-foreground">
         Dont have an account?{" "}
         <Link className="underline font-bold" to="/auth/register">
           Register
