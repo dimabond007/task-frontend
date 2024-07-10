@@ -20,10 +20,14 @@ import Register from "./pages/Register";
 import { useUserContext } from "./contexts/UserContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Profile from "./pages/Profile";
+import { useTheme } from "./contexts/ThemeProvider";
 
 function App() {
+  const { theme } = useTheme();
   return (
-    <>
+    <div
+      className={theme === "light" ? "light-theme-custom" : "dark-theme-custom"}
+    >
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
@@ -48,7 +52,7 @@ function App() {
         </Route>
         <Route path="*" element={<h1>404 Not Found</h1>} />
       </Routes>
-    </>
+    </div>
   );
 }
 

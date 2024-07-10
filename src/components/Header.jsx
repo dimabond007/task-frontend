@@ -11,10 +11,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Switch } from "./ui/switch";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeProvider";
 
 export default function Header() {
   const { token, getUser, logout } = useUserContext();
   const navigation = useNavigate();
+  const { theme, toggleTheme } = useTheme(); // Используем контекст темы
 
   const [loggedInUser, setLoggedInUser] = useState(null);
 
@@ -32,7 +36,7 @@ export default function Header() {
     localStorage.removeItem("token");
   }
   return (
-    <div className="w-full theme-custom bg-background">
+    <div className="w-full bg-background">
       <div className="rounded-lg text-card-foreground shadow-sm">
         <header className="bg-card">
           <nav className="flex gap-2 justify-between h-16 items-center container ">
@@ -53,7 +57,16 @@ export default function Header() {
               </li>
             </ul> */}
             {token ? (
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-8">
+                <div className="flex gap-2">
+                  <Sun />
+                  <Switch
+                    checked={theme === "dark"}
+                    onCheckedChange={toggleTheme}
+                  />
+                  <Moon />
+                </div>
+
                 <DropdownMenu>
                   <DropdownMenuTrigger>
                     <Avatar className="h-10 w-10 font-bold">

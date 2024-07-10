@@ -93,13 +93,13 @@ export default function Register() {
         />
         {/* <Input type="email" placeholder="Email" /> */}
         <Button type="submit" className="w-full">
-          Login
+          Register
         </Button>
       </form>
       <p className="text-xs">
         Already have an account?{" "}
         <Link className="underline font-bold" to="/auth/login">
-          Register
+          Login
         </Link>
       </p>
     </div>

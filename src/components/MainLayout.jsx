@@ -8,7 +8,7 @@ function MainLayout() {
     <>
       <Header />
 
-      <div className="w-full min-h-fit theme-custom bg-background">
+      <div className="w-full min-h-fit bg-background">
         <div className="container">
           <Outlet />
         </div>
