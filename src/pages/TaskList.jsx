@@ -98,7 +98,12 @@ const SortableItem = ({
 
     marginBottom: "10px",
   };
-
+  const handleTodoTitleChange = (index, newTitle) => {
+    const updatedTodoList = editTask.todoList.map((todo, i) =>
+      i === index ? { ...todo, title: newTitle } : todo
+    );
+    setEditTask({ ...editTask, todoList: updatedTodoList });
+  };
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <Card className="h-full w-full">
@@ -141,61 +146,58 @@ const SortableItem = ({
                       />
                     </div>
                     <div className="flex flex-col gap-4 w-full">
-                      <div className="flex flex-col gap-4 w-full">
-                        <Label>Todos of this task:</Label>
-                        <Separator />
-
-                        {editTask.todoList.map((todo, index) => (
-                          <div
-                            key={todo._id}
-                            className="flex gap-2 justify-between items-center "
-                          >
-                            <label className="font-medium">{todo.title}</label>
-                            <Trash2
-                              onClick={() => {
-                                deleteTodoOfTask(editTask._id, todo._id);
-                                setEditTask({
-                                  title: editTask.title,
-                                  description: editTask.description,
-                                  completed: editTask.completed,
-                                  todoList: editTask.todoList.filter(
-                                    (t) => t._id !== todo._id
-                                  ),
-                                });
-                                updateTaskLocaly(editTask);
-                              }}
-                            />
-                          </div>
-                        ))}
-                        <Separator />
-                        <Button
-                          onClick={() =>
-                            setEditTask({
-                              ...editTask,
-                              todoList: [
-                                ...editTask.todoList,
-                                { title: "", isComplete: false },
-                              ],
-                            })
-                          }
-                          className="flex gap-2"
+                      <Label>Todos of this task:</Label>
+                      <Separator />
+                      {editTask.todoList.map((todo, index) => (
+                        <div
+                          key={index}
+                          className="flex gap-2 justify-between items-center"
                         >
-                          <Plus />
-                          Add Todo
-                        </Button>
-                      </div>
+                          <Input
+                            type="text"
+                            value={todo.title}
+                            onChange={(e) =>
+                              handleTodoTitleChange(index, e.target.value)
+                            }
+                          />
+                          <Trash2
+                            onClick={() => {
+                              deleteTodoOfTask(editTask._id, todo._id);
+                              setEditTask({
+                                ...editTask,
+                                todoList: editTask.todoList.filter(
+                                  (t) => t._id !== todo._id
+                                ),
+                              });
+                              updateTaskLocaly(editTask);
+                            }}
+                          />
+                        </div>
+                      ))}
+                      <Separator />
+                      <Button
+                        onClick={() =>
+                          setEditTask({
+                            ...editTask,
+                            todoList: [
+                              ...editTask.todoList,
+                              { title: "", isComplete: false },
+                            ],
+                          })
+                        }
+                        className="flex gap-2"
+                      >
+                        <Plus />
+                        Add Todo
+                      </Button>
                       <DialogPrimitive.Close className="w-full">
                         <Button
                           onClick={async () => {
                             await api.patch("/task/" + id, editTask);
-                            // setEditTask({
-                            //   ...editTask,
-                            // });
                             updateTaskLocaly(editTask);
                           }}
                           className="flex gap-2 w-full"
                         >
-                          {" "}
                           <Save />
                           Save Changes
                         </Button>
