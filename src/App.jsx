@@ -26,7 +26,9 @@ function App() {
   const { theme } = useTheme();
   return (
     <div
-      className={theme === "light" ? "light-theme-custom" : "dark-theme-custom"}
+      className={`${
+        theme === "light" ? "light-theme-custom" : "dark-theme-custom"
+      } min-h-screen bg-background`}
     >
       <Routes>
         <Route path="/" element={<MainLayout />}>
