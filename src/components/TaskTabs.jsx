@@ -36,18 +36,20 @@ const TaskTabs = ({
             <h2 className="text-primary uppercase tracking-tighter font-black text-xl py-4">
               Pinned Tasks
             </h2>
-            {pinnedTasks.map((task) => (
-              <SortableItem
-                key={task._id}
-                id={task._id}
-                content={task}
-                onTodoUpdate={updateTodo}
-                handleDeleteTask={handleDeleteTask}
-                handlePin={handlePin}
-                updateTaskLocaly={updateTaskLocaly}
-                deleteTodoOfTask={deleteTodoOfTask}
-              />
-            ))}
+            <div>
+              {pinnedTasks.map((task) => (
+                <SortableItem
+                  key={task._id}
+                  id={task._id}
+                  content={task}
+                  onTodoUpdate={updateTodo}
+                  handleDeleteTask={handleDeleteTask}
+                  handlePin={handlePin}
+                  updateTaskLocaly={updateTaskLocaly}
+                  deleteTodoOfTask={deleteTodoOfTask}
+                />
+              ))}
+            </div>
           </div>
         ) : (
           ""
@@ -57,15 +59,17 @@ const TaskTabs = ({
             <h2 className="text-primary uppercase tracking-tighter font-black text-xl py-4">
               Unpinned Tasks
             </h2>
-            <SortableTaskList
-              tasks={tasks}
-              setTasks={setTasks}
-              updateTodo={updateTodo}
-              handleDeleteTask={handleDeleteTask}
-              handlePin={handlePin}
-              updateTaskLocaly={updateTaskLocaly}
-              deleteTodoOfTask={deleteTodoOfTask}
-            />
+            <div>
+              <SortableTaskList
+                tasks={tasks}
+                setTasks={setTasks}
+                updateTodo={updateTodo}
+                handleDeleteTask={handleDeleteTask}
+                handlePin={handlePin}
+                updateTaskLocaly={updateTaskLocaly}
+                deleteTodoOfTask={deleteTodoOfTask}
+              />
+            </div>
           </div>
         ) : (
           ""
