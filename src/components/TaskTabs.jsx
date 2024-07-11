@@ -1,6 +1,6 @@
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LayoutTemplate, TableProperties } from "lucide-react";
+import { LayoutTemplate, PinOff, TableProperties } from "lucide-react";
 import TaskDialog from "./TaskDialog";
 import SortableTaskList from "./SortableTaskList";
 import TaskTable from "./TaskTable";
@@ -47,6 +47,7 @@ const TaskTabs = ({
                   handlePin={handlePin}
                   updateTaskLocaly={updateTaskLocaly}
                   deleteTodoOfTask={deleteTodoOfTask}
+                  iconPin={<PinOff />}
                 />
               ))}
             </div>

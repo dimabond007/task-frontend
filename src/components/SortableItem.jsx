@@ -32,6 +32,7 @@ const SortableItem = ({
   handlePin,
   updateTaskLocaly,
   deleteTodoOfTask,
+  iconPin,
 }) => {
   const {
     attributes,
@@ -201,7 +202,8 @@ const SortableItem = ({
                 className="p-0 h-auto"
                 onClick={() => handlePin(id)}
               >
-                <Pin />
+                {/* <Pin /> */}
+                {iconPin}
               </Button>
               <Button
                 variant="ghost"

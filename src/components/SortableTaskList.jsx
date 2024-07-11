@@ -13,6 +13,7 @@ import {
 } from "@dnd-kit/sortable";
 import SortableItem from "./SortableItem";
 import api from "../services/api.service";
+import { Pin } from "lucide-react";
 
 const SortableTaskList = ({
   tasks,
@@ -94,6 +95,7 @@ const SortableTaskList = ({
               handlePin={handlePin}
               updateTaskLocaly={updateTaskLocaly}
               deleteTodoOfTask={deleteTodoOfTask}
+              iconPin={<Pin />}
             />
           ))}
         </div>
